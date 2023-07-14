@@ -1,9 +1,8 @@
 import random
-import time
 
 MAX_LINES=3
 MAX_BET= 100
-MIN_BET=1
+MIN_BET=10
 ROWS = 3
 COLS = 3
 
@@ -106,19 +105,28 @@ def get_bet():
 
 def main():
     balances=deposit()
-    lines=number_of_lines()
-    while True :
-        bet=get_bet()
-        total_bet=bet*lines
-        if total_bet>balances:
-            print(f"you do not have enough to bet that amount, your current balance is ${balances}")
-        else :
-            break
-    balances-=total_bet
-    print(f"You are betting ${bet} on {lines} lines. Total bet is equal to ${total_bet}")
-    slot_window=get_slot_machine_spin(ROWS, COLS, symbol_count)
-    print_slot_machine(slot_window)
-    result=check_winnings(slot_window, lines, bet, values)
-    balances+=result
-    print(f"you won ${result}, you're balance has become ${balances}", end="\n \n")
+    while True:
+        lines=number_of_lines()
+        while True :
+            bet=get_bet()
+            total_bet=bet*lines
+            if total_bet>balances:
+                print(f"you do not have enough to bet that amount, your current balance is ${balances}")
+            else :
+                break
+        balances-=total_bet
+        print(f"You are betting ${bet} on {lines} lines. Total bet is equal to ${total_bet}")
+        slot_window=get_slot_machine_spin(ROWS, COLS, symbol_count)
+        print_slot_machine(slot_window)
+        result=check_winnings(slot_window, lines, bet, values)
+        balances+=result
+        print(f"you won ${result}, you're balance has become ${balances}", end="\n \n")
+        if balances<MIN_BET:
+            respond=input("You have lost all your money, do you want to play again? (y/n)")
+            if respond=="y":
+                balances+=deposit()
+            else:
+                break
+    print("Thank you for playing this slot machine")
+    
 main()
